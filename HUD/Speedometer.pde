@@ -63,7 +63,6 @@ class Speedometer
     
     drawCircleNotches();
     drawSpeedometerStick();
-    
     if(useCustomStrings)
     {
       drawCustomStrings();
@@ -284,13 +283,13 @@ class Speedometer
   
   public boolean setNeedlePercentage(float percentage)
   {
-    if(percentage < 0)
+    if(percentage > 100 || percentage < 0)
     {
       print("Invalid needlePercentage passed to Speedometer\n");
       return false;
     }
 
-    needlePercentage = percentage%100;
+    needlePercentage = percentage;
 
     return true;
     
