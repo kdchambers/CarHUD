@@ -1,27 +1,32 @@
 // Global variables
-Speedometer test1, test2, test3, test4;
-Display myDisplay;
-RectPlus myRect;
+IndicatorArrow test, test1;
+BrightnessPulse pulse, rPulse;
+TrianglePlus tri;
+float x = 50;
 
 void setup()
 {
   size(1000, 700);
-  test1 = new Speedometer(new PVector((float)width/4, (float)height/4), 100.0, 15, 100.0, 10);
-  
-  test1.setNotchLen(10);
-  test1.setOuterGaugeColor(color(200, 200, 0));
-  test1.setInnerGaugeColor(color(0, 200, 0));
-  
-  test1.drawSpeedometer();
-  // PVector c, float w, float h, String d
-  myDisplay = new Display(new PVector((float)width/4, (float)height/4+80), 50, 20, new String("1234"));
-  myDisplay.drawDisplay();
-  
-  myRect = new RectPlus(new PVector(width/2, height/2), 300, 20, color(200, 50, 45), 10, 1);
-  myRect.drawRect();
+  pulse = new BrightnessPulse(0, 150, 0, 45, 90);
+  rPulse = new BrightnessPulse(150, 0, 0, 60, 90);
+  test = new IndicatorArrow(new PVector(50, 50), 50, 60, 20, 60, false, pulse);
+  test1 = new IndicatorArrow(new PVector(200, 50), 50, 60, 20, 60, true, pulse);
+  tri = new TrianglePlus(width/2, height/2, x, rPulse);
+  // x^2 = a^2 + b^2
+}
+
+void mousePressed()
+{
+  // Set the indicator to active if clicked
+  //print("Mouse Clicked\n");
+  test.setActive((test.containsMouse()) ? true : false);
+  test1.setActive((test1.containsMouse()) ? true : false);
+  tri.setActive(tri.contains(new PVector(mouseX, mouseY)));
 }
 
 void draw()
 {
-  
+  test.render();
+  test1.render();
+  tri.render();
 }
