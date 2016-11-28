@@ -455,7 +455,7 @@ class Speedometer
   private void drawSpeeds()
   {
 
-    float intervalAngle = needleAngleRange / (numNotches);
+    float intervalAngle = needleAngleRange / (numNotches - 1);
     int speed = startNotchTextVal;
     
     for(int i = 0; i < numNotches; i++)
