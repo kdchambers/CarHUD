@@ -132,6 +132,11 @@ class Speedometer
   
   // Sets
   
+  public void rotateClockwise(boolean val)
+  {
+    rotateClockwise = val; 
+  }
+  
   public void setBaseStartAngle(byte reference, float offset)
   {
     float angle = 0;
