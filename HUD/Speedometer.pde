@@ -460,7 +460,7 @@ class Speedometer
     
     for(int i = 0; i < numNotches; i++)
     {
-      float angle = notchEndAngle - (i * intervalAngle);
+      float angle = notchStartAngle + (i * intervalAngle);
       drawSpeed(cCenter, radius, speedFromEdge, angle, speed);
       speed += speedInc;
     }
@@ -502,10 +502,12 @@ class Speedometer
     
     if(rotateClockwise)
     {
-      angle = notchStartAngle - (needleAngleRange * (needlePercentage / 100));
+      angle = lerp(0, needleAngleRange, needlePercentage / 100);
+      angle += notchStartAngle;
     }else
     {
-      angle = notchStartAngle + (needleAngleRange * (needlePercentage / 100));
+      angle = lerp(0, needleAngleRange, needlePercentage / 100);
+      angle -= notchStartAngle;
     }
     angle %= 360;
     
