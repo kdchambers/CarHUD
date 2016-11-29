@@ -146,6 +146,17 @@ class GearDisplay
     return maxGear;
   }
   
+  public int getCurrentGear()
+  {
+    return currentGear;
+  }
+  
+  public void setGear(int gear)
+  {
+    if(gear > -1 && gear <= maxGear)
+      currentGear = gear;
+  }
+  
   public void setDisplayWidthMargin(float w)
   {
     displayWidthMargin = w;
