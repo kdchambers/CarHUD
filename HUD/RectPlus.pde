@@ -10,6 +10,8 @@ class RectPlus
  private float borderSize = 0;
  private color rBorderColor = color(0, 0, 0);
  private String label = "";
+ private int fontSize = 17;
+ private color strokeColor = color(#000000);
  
  private boolean initialized = false;
  
@@ -123,9 +125,6 @@ public void drawRect()
     return;
    }
    
-   textAlign(CENTER);
-   text(label, center.x, center.y);
-   
    noStroke();
    
    fill(rBorderColor);
@@ -163,6 +162,11 @@ public void drawRect()
      arc(center.x + rWidth / 2, center.y + rHeight / 2, radius*2, radius*2, radians(0) , radians(90));
      arc(center.x - rWidth / 2, center.y + rHeight / 2, radius*2, radius*2, radians(90) , radians(180)); 
    }
+   
+   textSize(fontSize);
+   fill(strokeColor);
+   textAlign(CENTER);
+   text(label, center.x, center.y);
  }
  
    boolean containsMouse()
