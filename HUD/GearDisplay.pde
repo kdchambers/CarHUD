@@ -179,6 +179,7 @@ class GearDisplay
    fill(color(150, 150, 150));
    pushMatrix();
    translate(displayX, displayY - buttonHeight - buttonSpacing);
+   fill(buttonColor);
    rect(0, 0, displayWidth, buttonHeight);
    popMatrix();
    
