@@ -3,16 +3,43 @@ IndicatorArrow leftIndicator, rightIndicator;
 BrightnessPulse pulse, rPulse;
 GearDisplay gearDisplay;
 Speedometer clock, oil, temperature, rpm, speedometer;
-RectPlus dialDash;
+RectPlus dialDash, buttonDash;
 HazardLight hazardLight;
+Button heating, headLights, dimLights, mute, abs, wipers;
+RectPlus heatingRect, headLightsRect, dimLightsRect, muteRect, absRect, wipersRect;
+float buttonSecXOffset, buttonSecYOffset = 0;
+
 
 void setup()
 {
   size(1000, 700);
   smooth();
+  buttonSecXOffset = 200;
   
   pulse = new BrightnessPulse(0, 150, 0, 60, 90);
   rPulse = new BrightnessPulse(150, 0, 0, 60, 90);
+  
+  // Buttons
+  
+  heatingRect = new RectPlus(new PVector(width*.35 + 150 + buttonSecXOffset, height*.25 + buttonSecYOffset), 120, 40, color(#95ADAD), 10);
+  heatingRect.setLabel("Heating");
+  headLightsRect = new RectPlus(new PVector(width*.35 + 300 + buttonSecXOffset, height*.25 + buttonSecYOffset), 120, 40, color(#95ADAD), 10);
+  headLightsRect.setLabel("HeadLights");
+  dimLightsRect = new RectPlus(new PVector(width*.35 + 150 + buttonSecXOffset, height*.35 + buttonSecYOffset),120, 40, color(#95ADAD), 10);
+  dimLightsRect.setLabel("Dimmers");
+  muteRect = new RectPlus(new PVector(width*.35 + buttonSecXOffset, height*.35 + buttonSecYOffset), 120, 40, color(#95ADAD), 10);
+  muteRect.setLabel("Mute Speakers");
+  absRect = new RectPlus(new PVector(width*.35 + buttonSecXOffset, height*.25 + buttonSecYOffset), 120, 40, color(#95ADAD), 10);
+  absRect.setLabel("ABS");
+  wipersRect = new RectPlus(new PVector(width*.35 + 300 + buttonSecXOffset, height*.35 + buttonSecYOffset), 120, 40, color(#95ADAD), 10);
+  wipersRect.setLabel("Act. Wipers");
+  
+  heating = new Button(heatingRect, rPulse);
+  headLights = new Button(headLightsRect, rPulse);
+  dimLights = new Button(dimLightsRect, rPulse);
+  mute = new Button(muteRect, rPulse);
+  abs = new Button(absRect, rPulse);
+  wipers = new Button(wipersRect, rPulse);
   
   leftIndicator = new IndicatorArrow(new PVector(width*.6, height*.5), 20, 30, 10, 20, false, pulse);
   rightIndicator = new IndicatorArrow(new PVector(width*.83, height*.5), 20, 30, 10, 20, true, pulse);
@@ -22,8 +49,12 @@ void setup()
   
   // Gear console
   gearDisplay = new GearDisplay(width*.25, height*.7, 100, 300, 6);
+  gearDisplay.setDisplayColor(color(#000000));
+  gearDisplay.setInnerDisplayColor(color(#B4DBDB));
+  gearDisplay.setButtonColor(color(#279A9C));
   
   dialDash = new RectPlus(new PVector(width*.5, height*.7), width*.98, 350, color(#12362B), 30, 2, color(#002117));
+  buttonDash = new RectPlus(new PVector(width*.5+buttonSecXOffset, height*.3+buttonSecYOffset), width*.5, 150, color(#12362B), 10, 2, color(#002117));
   
   clock = new Speedometer(new PVector(width*.75, height*.75), 100, 12, 100, 1);
   clock.setBaseStartAngle((byte)0, -360.0/12.0);
@@ -151,6 +182,9 @@ void mousePressed()
   
   gearDisplay.upGearClicked();
   gearDisplay.downGearClicked();
+  
+  if(heating.containsMouse())
+    heating.toggleActive();
 }
 
 void draw()
@@ -159,14 +193,20 @@ void draw()
   if(frameCount%60 == 1)
   {
     dialDash.drawRect();
+    buttonDash.drawRect();
     temperature.drawSpeedometer();
     oil.drawSpeedometer();
     rpm.drawSpeedometer();
     speedometer.drawSpeedometer();
     gearDisplay.render();
   }
-  
+  heating.render();
+  headLights.render();
+  dimLights.render();
+  mute.render();
+  abs.render();
   hazardLight.render();
+  wipers.render();
   leftIndicator.render();
   rightIndicator.render();
   // Set the time
