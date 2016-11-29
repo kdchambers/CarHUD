@@ -24,7 +24,25 @@ The best example of this is the Speedometer class which has the following option
 
 Any values that are not specified by the user of the module are given smart default values so that the modules is both highly customisable yet easy to use.
 
-Different objects work together to achieve a certain effect, for example the brightnessPulse object is used to generate colours for other objects to model a pulsing. Different buttons share simple communications such as the hazard light and the indicator lights. The hazard light turns on both the indicator lights but other than this instance both indicator lights will never be on at the same time. Clicking one will cause the program to check whether the other is active and set it to unactive if needed.
+Different objects work together to achieve a certain effect, for example the brightnessPulse object is used to generate colours for other objects to model a pulsing effect. Different buttons share simple communications such as the hazard light and the indicator lights. The hazard light turns on both the indicator lights but other than this instance both indicator lights will never be on at the same time. Clicking one will cause the program to check whether the other is active and set it to unactive if needed.
+
+Module structure
+
+The general structure of each model is as follows
+
+1) Private Global variables
+2) Contructor(s)
+3) Get methods 
+4) Set methods
+5) Private methods
+
+The execution structure of each module is generally the following
+
+1) Call contructor and pass basic information
+2) Pass extra information as needed so the module looks and acts like needed.
+3) Call the render() method
+	3A) Defaults will be calculated for optional variables that were not specified
+	3B) Module will render inself
 
 
 
