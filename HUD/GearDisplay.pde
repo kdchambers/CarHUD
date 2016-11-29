@@ -141,6 +141,11 @@ class GearDisplay
     displayHeightMargin = h;
   }
   
+  public int getMaxGear()
+  {
+    return maxGear;
+  }
+  
   public void setDisplayWidthMargin(float w)
   {
     displayWidthMargin = w;
