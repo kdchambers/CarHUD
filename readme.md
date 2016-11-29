@@ -43,6 +43,8 @@ The execution structure of each module is generally the following
 3) Call the render() method
 	3A) Defaults will be calculated for optional variables that were not specified
 	3B) Module will render inself
+	
+Link to video demo: [Demo!](https://www.youtube.com/watch?v=VjPUWhaEQxA)
 
 
 
