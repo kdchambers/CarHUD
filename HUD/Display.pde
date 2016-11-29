@@ -6,6 +6,7 @@ class Display
   String display;
   color rectColor = color(200, 200, 200);
   boolean initialized = false;
+  RectPlus outer;
   
   Display(PVector c, float w, float h, String d)
   {
@@ -20,15 +21,27 @@ class Display
     rHeight = h;
     display = d;
     
+    outer = new RectPlus(center, rWidth, rHeight, color(200, 200, 200), 3, 1);
+    
     initialized = true;
+  }
+  
+  void setColor(color c)
+  {
+    rectColor = c;
+  }
+  
+  boolean containsMouse()
+  {
+    return outer.containsMouse();
   }
   
   void drawDisplay()
   {
-   fill(rectColor);
-   rect(center.x - rWidth / 2, center.y - rHeight / 2, rWidth, rHeight); 
+   outer.setColor(rectColor);
+   outer.drawRect();
    textAlign(CENTER);
-   textSize(10);
+   textSize(rHeight / 2);
    fill(0, 0, 0);
    text(display, center.x, center.y + 5);
   }
