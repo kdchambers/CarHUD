@@ -1,4 +1,4 @@
-Car Heads Up Display
+<h2>Car Heads Up Display</h2>
 
 This is a Processing 3.x program that displays a simple HUD for a car with some interactivity. The user will be able to see the speed, rpm, oil level and temperature of the car as well as being able to toggle different buttons such as indicators and various lights. All buttons in the program are responsive and will pulse a colour when activated. 
 
@@ -44,7 +44,9 @@ The execution structure of each module is generally the following
 	3A) Defaults will be calculated for optional variables that were not specified</br>
 	3B) Module will render inself</br>
 	
-Link to video demo: [Demo!](https://www.youtube.com/watch?v=VjPUWhaEQxA)
+Link to video demo: [Demo!](https://www.youtube.com/watch?v=VjPUWhaEQxA)</br>
+[![Video](https://www.youtube.com/watch?v=VjPUWhaEQxA)
+
 
 
 
