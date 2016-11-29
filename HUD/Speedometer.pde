@@ -9,6 +9,7 @@ class Speedometer
   private color notchColorFrom = color(0, 0, 255);
   private color notchColorTo = color(255, 0, 0);
   private IntList borderColorList = new IntList();
+  private color edgeColor = -1;
   
   // Dimensions and Positioning
   private float notchLen = -1;
@@ -39,6 +40,7 @@ class Speedometer
   private float speedInc = -1;
   private float baseStartAngle = 0;
   private color textColour = -1;
+  private int needleWeight = 1;
   
   // Public Interface 
 
@@ -60,6 +62,8 @@ class Speedometer
     {
      drawBorders(); 
     }
+    
+    stroke(edgeColor);
     
     fill(outerGaugeColor);
     ellipse(cCenter.x, cCenter.y, radius*2, radius*2);
@@ -137,9 +141,22 @@ class Speedometer
   
   // Sets
   
+  public void setEdgeColor(color val)
+  {
+    edgeColor = val;
+  }
+  
+  public void setNeedleWeight(int val)
+  {
+    if(val < 1 || val > 5)
+      return;
+    needleWeight = val;
+  }
+  
   public void setTextColor(color val)
   {
     textColour = val;
+    print("Setting textCOlour\n");
   }
   
   public void setNotchAngleRange(float val)
@@ -225,7 +242,7 @@ class Speedometer
        }
        
        borderColorList.append(lerpColor(color(0, 0, 255), color(255, 0, 0), ((float)i + 1) / (float)list.size()));
-       fill(lerpColor(color(0, 255, 0), color(255, 0, 0), i+1.0 / list.size()));
+       //fill(lerpColor(color(0, 255, 0), color(255, 0, 0), i+1.0 / list.size()));
       }
     
       borderLenList = list;
@@ -388,14 +405,24 @@ class Speedometer
   
   private void drawBorders()
   {
-    FloatList tempBorderLenList = borderLenList;
-    IntList tempBorderColorList = borderColorList;
+    FloatList tempBorderLenList = new FloatList();
+    IntList tempBorderColorList = new IntList();
+    
+    // Deep copy borderLenList and borderColorList
+    for(int x = 0; x < borderLenList.size(); x++)
+    {
+      tempBorderLenList.append(borderLenList.get(x)); 
+      tempBorderColorList.append(borderColorList.get(x));
+    }
+    
     int maxIndex = 0;
     float maxVal = 0;
     
-    while(borderLenList.size() >= 1)
+    stroke(edgeColor);
+    
+    while(tempBorderLenList.size() >= 1)
     {
-      for(int x = 0; x < borderLenList.size(); x++)
+      for(int x = 0; x < tempBorderLenList.size(); x++)
       {
         if(tempBorderLenList.get(x) > maxVal)
         {
@@ -413,6 +440,8 @@ class Speedometer
       maxIndex = 0;
       maxVal = 0;
     }
+    
+    stroke(color(#000000));
   }
   
   private void assignDefaults()
@@ -435,6 +464,8 @@ class Speedometer
       notchAngleRange = 180;
     if(textColour == -1)
       textColour = color(0, 0, 0);
+    if(edgeColor == -1)
+      edgeColor = color(#000000);
   }
   
   private void drawSpeed(PVector center, float radius, float fromEdge,
@@ -444,6 +475,7 @@ class Speedometer
     
     location = pointOnCirc(center, radius - fromEdge - notchLen - notchFromEdge, angle);
     fill(textColour);
+    //stroke(textColour);
     textAlign(CENTER);
     text(speed, location.x, location.y+5);
   }
@@ -526,7 +558,12 @@ class Speedometer
     PVector needleOuter = pointOnCirc(cCenter, needleLen, angle);
     stroke(needleColor);
     
+    strokeWeight(needleWeight);
     line(cCenter.x, cCenter.y, needleOuter.x, needleOuter.y);
+    
+    // Reset stroke colour and weight
+    stroke(color(#000000));
+    strokeWeight(1);
   }
   
   private PVector pointOnCirc(PVector center, float radius, float angle)
