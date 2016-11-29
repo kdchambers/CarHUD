@@ -9,6 +9,7 @@ class RectPlus
  private float radius = 0;
  private float borderSize = 0;
  private color rBorderColor = color(0, 0, 0);
+ private String label = "";
  
  private boolean initialized = false;
  
@@ -88,6 +89,11 @@ class RectPlus
     initialized = true;
  }
  
+ void setLabel(String val)
+  {
+    label = val;
+  }
+ 
  private void checkRadius(float w, float h, float r)
  {
    if(r > (w / 2))
@@ -103,6 +109,11 @@ class RectPlus
     }
  }
  
+ public void setColor(color c)
+ {
+   rColor = c;
+ }
+ 
 public void drawRect()
  {
    
@@ -112,17 +123,8 @@ public void drawRect()
     return;
    }
    
-   print(radius);
-   
-   // Two horizontal lines
-   //line(center.x - rWidth / 2, center.y + rHeight / 2 + radius, center.x + rWidth / 2, center.y + rHeight / 2 + radius);
-   //line(center.x - rWidth / 2, center.y - rHeight / 2 - radius, center.x + rWidth / 2, center.y - rHeight / 2 - radius);
-   
-   // Two vertical lines
-   //line(center.x - rWidth / 2 - radius, center.y + rHeight / 2, center.x - rWidth / 2 - radius, center.y - rHeight / 2);
-   //line(center.x + rWidth / 2 + radius, center.y - rHeight / 2, center.x + rWidth / 2 + radius, center.y + rHeight / 2);
-   
-   // Draw in corners if needed
+   textAlign(CENTER);
+   text(label, center.x, center.y);
    
    noStroke();
    
@@ -161,7 +163,17 @@ public void drawRect()
      arc(center.x + rWidth / 2, center.y + rHeight / 2, radius*2, radius*2, radians(0) , radians(90));
      arc(center.x - rWidth / 2, center.y + rHeight / 2, radius*2, radius*2, radians(90) , radians(180)); 
    }
-   
-   
  }
+ 
+   boolean containsMouse()
+   {
+     // Temp varibles
+     float tWidth = (rWidth / 2) + 2*radius;
+     float tHeight = (rHeight / 2) + 2*radius;
+     
+     if(mouseX > (center.x+tWidth) || mouseX < (center.x-tWidth) || mouseY > (center.y+tHeight) || mouseY < (center.y-tHeight) )
+       return false;
+       
+     return true;
+   }
 }
