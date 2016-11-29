@@ -30,19 +30,19 @@ Module structure
 
 The general structure of each model is as follows
 
-1) Private Global variables
-2) Contructor(s)
-3) Get methods 
-4) Set methods
-5) Private methods
+1) Private Global variables </br>
+2) Contructor(s)</br>
+3) Get methods</br>
+4) Set methods</br
+5) Private methods</br>
 
 The execution structure of each module is generally the following
 
-1) Call contructor and pass basic information
-2) Pass extra information as needed so the module looks and acts like needed.
-3) Call the render() method
-	3A) Defaults will be calculated for optional variables that were not specified
-	3B) Module will render inself
+1) Call contructor and pass basic information</br>
+2) Pass extra information as needed so the module looks and acts like needed.</br>
+3) Call the render() method</br>
+	3A) Defaults will be calculated for optional variables that were not specified</br>
+	3B) Module will render inself</br>
 	
 Link to video demo: [Demo!](https://www.youtube.com/watch?v=VjPUWhaEQxA)
 
