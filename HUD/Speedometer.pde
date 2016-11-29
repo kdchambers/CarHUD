@@ -38,6 +38,7 @@ class Speedometer
   private boolean useNotchGradientColors = false;
   private float speedInc = -1;
   private float baseStartAngle = 0;
+  private color textColour = -1;
   
   // Public Interface 
 
@@ -135,6 +136,11 @@ class Speedometer
   }
   
   // Sets
+  
+  public void setTextColor(color val)
+  {
+    textColour = val;
+  }
   
   public void setNotchAngleRange(float val)
   {
@@ -427,6 +433,8 @@ class Speedometer
     { textSize = (int)radius / 3; }
     if(notchAngleRange == -1)
       notchAngleRange = 180;
+    if(textColour == -1)
+      textColour = color(0, 0, 0);
   }
   
   private void drawSpeed(PVector center, float radius, float fromEdge,
@@ -435,6 +443,7 @@ class Speedometer
     PVector location;
     
     location = pointOnCirc(center, radius - fromEdge - notchLen - notchFromEdge, angle);
+    fill(textColour);
     textAlign(CENTER);
     text(speed, location.x, location.y+5);
   }
@@ -445,6 +454,7 @@ class Speedometer
     PVector location;
     
     location = pointOnCirc(center, radius - fromEdge - notchLen - notchFromEdge, angle);
+    fill(textColour);
     textAlign(CENTER);
     text(str, location.x, location.y);
   }
