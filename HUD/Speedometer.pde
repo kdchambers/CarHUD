@@ -13,7 +13,6 @@ class Speedometer
   private float notchLen = -1;
   private float notchFromEdge = -1;
   private float notchStartAngle = -1;
-  private float notchEndAngle = -1;
   private float needleLen = -1;
   private float speedFromEdge = -1;
   private FloatList borderLenList = new FloatList();
@@ -31,10 +30,10 @@ class Speedometer
   private boolean useCustomStrings = false;
   private float speedInc = -1;
   private float baseStartAngle = 0;
-  private boolean rotateClockwise = true;
   private float needleAngleRange;
-  private float notchIntervalAngle;
-
+  private int textSize = -1;
+  private boolean rotateClockwise = true;
+  private float notchAngleRange = -1;
   // Public Interface 
 
   public void drawSpeedometer()
@@ -132,9 +131,12 @@ class Speedometer
   
   // Sets
   
-  public void rotateClockwise(boolean val)
+  public void setNotchAngleRange(float val)
   {
-    rotateClockwise = val; 
+    if(val < 0)
+      return;
+      
+    notchAngleRange = val;
   }
   
   public void setBaseStartAngle(byte reference, float offset)
@@ -175,6 +177,13 @@ class Speedometer
     
     startNotchTextVal = start;
     return true;
+  }
+  
+  public void setRotationRange(boolean isClockwise, float startAngle, float totalAngle)
+  {
+    rotateClockwise = isClockwise;
+    notchStartAngle = startAngle;
+    notchAngleRange = totalAngle;
   }
   
   public boolean setNotchWeight(int weight)
@@ -275,15 +284,6 @@ class Speedometer
     numNotches = n;
     
     return true;
-  }
-  
-  public void setNotchRange(float start, float end)
-  {
-    
-    notchStartAngle = start;
-    notchEndAngle = end;
-    needleAngleRange = end - start;
-    
   }
   
   public boolean setNeedlePercentage(float percentage)
@@ -411,20 +411,14 @@ class Speedometer
     {  speedFromEdge = (radius - (notchLen + notchFromEdge))*0.20; }
     if(notchWeight == -1)
     { notchWeight = 1; }
-    if(notchEndAngle == -1)
-    { notchEndAngle = (360 + baseStartAngle); }
     if(notchStartAngle == -1)
     { notchStartAngle = (0 + baseStartAngle); }
     if(notchFromEdge == -1)
     { notchFromEdge = 10; }
+    if(textSize == -1)
+    { textSize = (int)radius / 3; }
     
-    needleAngleRange = notchEndAngle - notchStartAngle;
-    
-    float tempNumNotches = numNotches;
-    if(needleAngleRange == 360)
-      tempNumNotches++;
       
-    notchIntervalAngle = needleAngleRange / (tempNumNotches-1);
   }
   
   private void drawSpeed(PVector center, float radius, float fromEdge,
@@ -449,10 +443,18 @@ class Speedometer
   
   private void drawCustomStrings()
   {
-    
+    textSize(textSize);
     for(int i = 0; i < numNotches; i++)
     {
-      float angle = notchStartAngle + (i * notchIntervalAngle);
+      float angle;
+      if(rotateClockwise)
+        //angle = notchStartAngle - (i * notchIntervalAngle);
+        angle = lerp(notchStartAngle, notchStartAngle - notchAngleRange, (float)i/(numNotches - 1));
+      else
+      {
+        //angle = notchStartAngle + (i * notchIntervalAngle);
+        angle = lerp(notchStartAngle, notchStartAngle + notchAngleRange, (float)i/(numNotches - 1));
+      }
       drawString(cCenter, radius, speedFromEdge, angle, stringList[i]);
     }
   }
@@ -460,12 +462,22 @@ class Speedometer
   private void drawSpeeds()
   {
 
-    float intervalAngle = needleAngleRange / (numNotches - 1);
+    //float intervalAngle = needleAngleRange / (numNotches - 1);
     int speed = startNotchTextVal;
+    float angle;
     
     for(int i = 0; i < numNotches; i++)
     {
-      float angle = notchStartAngle + (i * intervalAngle);
+       
+      if(rotateClockwise)
+      {
+        angle = lerp(notchStartAngle, notchStartAngle - notchAngleRange, (float)i/(numNotches - 1));
+      }
+      else
+      {
+        angle = lerp(notchStartAngle, notchStartAngle + notchAngleRange, (float)i/(numNotches - 1));
+      }
+        
       drawSpeed(cCenter, radius, speedFromEdge, angle, speed);
       speed += speedInc;
     }
@@ -473,7 +485,7 @@ class Speedometer
   
   private void drawCircleNotches()
   {
-    float angle = notchStartAngle;
+    float angle;
     float tempNotchLen = notchLen;
     
     fill(notchesColor);
@@ -481,6 +493,11 @@ class Speedometer
     
     for(int i = 0; i < numNotches; i++)
     {
+      if(rotateClockwise)
+        angle = lerp(notchStartAngle, notchStartAngle - notchAngleRange, (float)i/(numNotches - 1));
+      else
+        angle = lerp(notchStartAngle, notchStartAngle + notchAngleRange, (float)i/(numNotches - 1));
+      
       if(i%2 == 1 && alternateNotchLen == true)
       {
         tempNotchLen /= 2;
@@ -493,8 +510,8 @@ class Speedometer
       {
         stroke(lerpColor(notchColorTo, notchColorFrom, ((float)i+1.0)/numNotches));
       }
+      
       drawCircleNotch(cCenter, radius, angle, tempNotchLen, notchFromEdge);
-      angle += notchIntervalAngle;
     }
     
     // Set strokeWeight back
@@ -504,15 +521,14 @@ class Speedometer
   private void drawSpeedometerStick()
   {
     float angle;
+    print("Angle range: " + needleAngleRange);
     
     if(rotateClockwise)
     {
-      angle = lerp(0, needleAngleRange, needlePercentage / 100);
-      angle += notchStartAngle;
+      angle = lerp(notchStartAngle, notchStartAngle - notchAngleRange, (float)needlePercentage / 100.0);
     }else
     {
-      angle = lerp(0, needleAngleRange, needlePercentage / 100);
-      angle -= notchStartAngle;
+      angle = lerp(notchStartAngle, notchStartAngle + notchAngleRange, (float)needlePercentage / 100.0);
     }
     angle %= 360;
     
