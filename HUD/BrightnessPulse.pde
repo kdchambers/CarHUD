@@ -31,8 +31,14 @@ class BrightnessPulse
      }
    }
    
+   color getBaseColor()
+   {
+     return color(r, g, b);
+   }
+   
    color getColor()
    {
+     // Calculate the color maps (Skip if starting colour is zero)
      nr = (r != 0) ? map(currFrame, 0, frameLength, r, r+rRange) : 0;
      ng = (g != 0) ? map(currFrame, 0, frameLength, g, g+gRange) : 0;
      nb = (b != 0) ? map(currFrame, 0, frameLength, b, b+bRange) : 0;
