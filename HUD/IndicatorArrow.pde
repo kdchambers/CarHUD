@@ -16,8 +16,6 @@ class IndicatorArrow
 
   IndicatorArrow(PVector c, float triH, float triW, float tlH, float tlL, boolean dir, BrightnessPulse p)
   {
-
-    print("Constructing IndicatorArrow\n");
     center = c;
     tHeight = triH;
     tBase = triW;
