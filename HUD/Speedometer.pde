@@ -79,6 +79,8 @@ class Speedometer
     {
       drawSpeeds();
     }
+    
+    strokeWeight(DEFAULTSTROKEWEIGHT);
   }
   
   Speedometer(PVector center, float r, int notches, float nlPercentage, float spInc)
@@ -165,6 +167,14 @@ class Speedometer
       return;
       
     notchAngleRange = val;
+  }
+  
+  public void setTextSize(int size)
+  {
+   if(size < 1 || size > 35)
+     return;
+     
+    textSize = size;
   }
   
   public void setBaseStartAngle(byte reference, float offset)
@@ -459,7 +469,7 @@ class Speedometer
     if(notchFromEdge == -1)
     { notchFromEdge = 10; }
     if(textSize == -1)
-    { textSize = (int)radius / 3; }
+    { textSize = 15; }
     if(notchAngleRange == -1)
       notchAngleRange = 180;
     if(textColour == -1)
@@ -475,7 +485,6 @@ class Speedometer
     
     location = pointOnCirc(center, radius - fromEdge - notchLen - notchFromEdge, angle);
     fill(textColour);
-    //stroke(textColour);
     textAlign(CENTER);
     text(speed, location.x, location.y+5);
   }
@@ -511,6 +520,7 @@ class Speedometer
     int speed = startNotchTextVal;
     float endAngle = (rotateClockwise) ? (notchStartAngle - notchAngleRange) : (notchStartAngle + notchAngleRange);
     float angle;
+    textSize(textSize);
     
     for(int i = 0; i < numNotches; i++)
     {
@@ -550,7 +560,11 @@ class Speedometer
   private void drawSpeedometerStick()
   {
     float angle;
-    float endAngle = (rotateClockwise) ? (notchStartAngle - notchAngleRange) : (notchStartAngle + notchAngleRange);
+    float endAngle;
+    if(notchAngleRange == 360)
+      endAngle = notchStartAngle - 1;
+    else
+      endAngle = (rotateClockwise) ? (notchStartAngle - notchAngleRange) : (notchStartAngle + notchAngleRange);
     
     angle = lerp(notchStartAngle, endAngle, (float)needlePercentage / 100.0);
     angle %= 360;
