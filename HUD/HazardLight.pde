@@ -1,4 +1,4 @@
-class TrianglePlus
+class HazardLight
 {
   // Global variables
   private float tHeight;
@@ -13,7 +13,7 @@ class TrianglePlus
   private float outerPaddingLen;
   private float innerPaddingLen;
   
-  TrianglePlus(float tX, float tY, float h, BrightnessPulse bp)
+  HazardLight(float tX, float tY, float h, BrightnessPulse bp)
   {
     tHeight = h;
     pulse = bp;
@@ -55,6 +55,11 @@ class TrianglePlus
   public void toggleActive()
   {
     active = !active;
+  }
+  
+  public boolean isActive()
+  {
+    return active;
   }
   
   public void render()
