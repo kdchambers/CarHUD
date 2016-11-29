@@ -45,7 +45,8 @@ The execution structure of each module is generally the following
 	3B) Module will render inself</br>
 	
 Link to video demo: [Demo!](https://www.youtube.com/watch?v=VjPUWhaEQxA)</br>
-[![Video](https://www.youtube.com/watch?v=VjPUWhaEQxA)
+
+[![Video](http://img.youtube.com/vi/VjPUWhaEQxA/0.jpg)](http://www.youtube.com/watch?v=VjPUWhaEQxA)
 
 
 
