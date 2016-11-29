@@ -1,16 +1,18 @@
 // Global variables
 IndicatorArrow leftIndicator, rightIndicator;
-BrightnessPulse pulse, rPulse;
+BrightnessPulse pulse, rPulse, headLightPulse;
 GearDisplay gearDisplay;
-Speedometer clock, oil, temperature, rpm, speedometer;
+Speedometer clock, oil, temperature, rpm, speedometer, minuteClock;
 RectPlus dialDash, buttonDash;
 HazardLight hazardLight;
 Button heating, headLights, dimLights, mute, abs, wipers;
 RectPlus heatingRect, headLightsRect, dimLightsRect, muteRect, absRect, wipersRect;
+Display speedDisplay, rpmDisplay;
 float buttonSecXOffset, buttonSecYOffset = 0;
 
 float engineControl = 0;
-
+float speed = 0;
+float rpmValue = 0;
 
 void setup()
 {
@@ -19,29 +21,41 @@ void setup()
   buttonSecXOffset = 200;
   
   pulse = new BrightnessPulse(0, 150, 0, 60, 90);
+  headLightPulse = new BrightnessPulse(80, 80, 0, 60, 50);
   rPulse = new BrightnessPulse(150, 0, 0, 60, 90);
+  
+  speedDisplay = new Display(new PVector(width*.6, height*.1), 200, 40, "SPEED: " + speed);
+  rpmDisplay = new Display(new PVector(width*.82, height*.1), 200, 40, "RPM: " + rpmValue);
   
   // Buttons
   
   heatingRect = new RectPlus(new PVector(width*.35 + 150 + buttonSecXOffset, height*.25 + buttonSecYOffset), 120, 40, color(#95ADAD), 10);
   heatingRect.setLabel("Heating");
-  headLightsRect = new RectPlus(new PVector(width*.35 + 300 + buttonSecXOffset, height*.25 + buttonSecYOffset), 120, 40, color(#95ADAD), 10);
+  headLightsRect = new RectPlus(new PVector(width*.35 + 300 + buttonSecXOffset, height*.25 + buttonSecYOffset), 120, 40, color(#C2F00C), 10);
   headLightsRect.setLabel("HeadLights");
-  dimLightsRect = new RectPlus(new PVector(width*.35 + 150 + buttonSecXOffset, height*.35 + buttonSecYOffset),120, 40, color(#95ADAD), 10);
+  dimLightsRect = new RectPlus(new PVector(width*.35 + 300 + buttonSecXOffset, height*.35 + buttonSecYOffset),120, 40, color(#C2F00C), 10);
   dimLightsRect.setLabel("Dimmers");
-  muteRect = new RectPlus(new PVector(width*.35 + buttonSecXOffset, height*.35 + buttonSecYOffset), 120, 40, color(#95ADAD), 10);
+  muteRect = new RectPlus(new PVector(width*.35 + buttonSecXOffset, height*.35 + buttonSecYOffset), 120, 40, color(#0212F2), 10);
   muteRect.setLabel("Mute Speakers");
   absRect = new RectPlus(new PVector(width*.35 + buttonSecXOffset, height*.25 + buttonSecYOffset), 120, 40, color(#95ADAD), 10);
   absRect.setLabel("ABS");
-  wipersRect = new RectPlus(new PVector(width*.35 + 300 + buttonSecXOffset, height*.35 + buttonSecYOffset), 120, 40, color(#95ADAD), 10);
+  wipersRect = new RectPlus(new PVector(width*.35 + 150 + buttonSecXOffset, height*.35 + buttonSecYOffset), 120, 40, color(#0212F2), 10);
   wipersRect.setLabel("Act. Wipers");
   
   heating = new Button(heatingRect, rPulse);
-  headLights = new Button(headLightsRect, rPulse);
-  dimLights = new Button(dimLightsRect, rPulse);
-  mute = new Button(muteRect, rPulse);
-  abs = new Button(absRect, rPulse);
+  headLights = new Button(headLightsRect, headLightPulse);
+  dimLights = new Button(dimLightsRect, headLightPulse);
+  mute = new Button(muteRect, pulse);
+  abs = new Button(absRect, pulse);
   wipers = new Button(wipersRect, rPulse);
+  
+  // Minute Clock
+  minuteClock = new Speedometer(new PVector(width*.37, height*.12), 70, 12, 100, 5);
+  minuteClock.setSpeedStart(0);
+  minuteClock.setBaseStartAngle((byte)0, 0);
+  minuteClock.setRotationRange(true, 0, 360);
+  minuteClock.setOuterGaugeColor(color(#9293A1));
+  minuteClock.setTextColor(color(#041C0C));
   
   leftIndicator = new IndicatorArrow(new PVector(width*.6, height*.5), 20, 30, 10, 20, false, pulse);
   rightIndicator = new IndicatorArrow(new PVector(width*.83, height*.5), 20, 30, 10, 20, true, pulse);
@@ -59,7 +73,7 @@ void setup()
   dialDash = new RectPlus(new PVector(width*.5, height*.7), width*.98, 350, color(#12362B), 30, 2, color(#002117));
   buttonDash = new RectPlus(new PVector(width*.5+buttonSecXOffset, height*.3+buttonSecYOffset), width*.5, 150, color(#12362B), 10, 2, color(#002117));
   
-  clock = new Speedometer(new PVector(width*.25, height*.22), 130, 12, 100, 1);
+  clock = new Speedometer(new PVector(width*.15, height*.22), 130, 12, 100, 1);
   clock.setBaseStartAngle((byte)0, -360.0/12.0);
   clock.setRotationRange(true, 0, 360);
   clock.setSpeedStart(1);
@@ -143,7 +157,7 @@ void setup()
   
   oil.setBorderLenList(oilBorderLens, oilBorderColours);
   
-  background(color(255, 255, 255));
+  background(color(200, 200, 250));
   
 }
 
@@ -203,24 +217,35 @@ void mousePressed()
 
 void draw()
 {
-  
   if(frameCount%60 == 1)
   {
     dialDash.drawRect();
     buttonDash.drawRect();
+    temperature.setNeedlePercentage(random(temperature.getNeedlePercentage() - 5, temperature.getNeedlePercentage() + 5)%95);
     temperature.drawSpeedometer();
+    oil.setNeedlePercentage(random(oil.getNeedlePercentage() - 5, oil.getNeedlePercentage() + 5)%95);
     oil.drawSpeedometer();
     gearDisplay.render();
+    
+    speedDisplay.setDisplayText("Speed: " + round(speed) + " MPH");
+    speedDisplay.drawDisplay();
+    rpmDisplay.setDisplayText("RPM: " + round(rpmValue*100));
+    rpmDisplay.drawDisplay();
+    
+    minuteClock.setNeedlePercentage(((float)minute()/60.0) * 100.0 + (1.0/15.0)*100.0);
+    minuteClock.drawSpeedometer();
   }
   
   clock.drawSpeedometer();
   
   rpm.drawSpeedometer();
+  rpmValue = rpm.getSpeed();
   speedometer.drawSpeedometer();
+  speed = speedometer.getSpeed();
   
   speedometer.setNeedlePercentage((engineControl * ((float)gearDisplay.getCurrentGear() / (float)gearDisplay.getMaxGear())));
   rpm.setNeedlePercentage(engineControl);
-  if(engineControl >= 80 && gearDisplay.currentGear != gearDisplay.getMaxGear())
+  if(engineControl >= 75 && gearDisplay.currentGear != gearDisplay.getMaxGear())
   {
     engineControl -= 40;
     gearDisplay.incGear();
@@ -242,8 +267,9 @@ void draw()
   wipers.render();
   leftIndicator.render();
   rightIndicator.render();
+  
   // Set the time
-  float clockPercentage = ((hour()%12)*100)/12;
+  float clockPercentage = ((hour()%12.0)/12) * 100 + 3;
   
   clock.setNeedlePercentage(clockPercentage);
 }

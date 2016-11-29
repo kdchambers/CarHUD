@@ -26,6 +26,11 @@ class Display
     initialized = true;
   }
   
+  public void setDisplayText(String txt)
+  {
+    display = txt;
+  }
+  
   void setColor(color c)
   {
     rectColor = c;

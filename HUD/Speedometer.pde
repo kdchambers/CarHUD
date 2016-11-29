@@ -41,6 +41,7 @@ class Speedometer
   private float baseStartAngle = 0;
   private color textColour = -1;
   private int needleWeight = 1;
+  private boolean rotateNeedleFully = false;
   
   // Public Interface 
 
@@ -133,7 +134,7 @@ class Speedometer
       return -1;
     }
     
-    return (speedInc*numNotches) / (float)needlePercentage;
+    return (startNotchTextVal + speedInc*(numNotches - 1)) * (float)needlePercentage/100.0;
   }
   
   public float getNeedlePercentage()
@@ -158,7 +159,6 @@ class Speedometer
   public void setTextColor(color val)
   {
     textColour = val;
-    print("Setting textCOlour\n");
   }
   
   public void setNotchAngleRange(float val)
@@ -224,7 +224,10 @@ class Speedometer
     notchAngleRange = totalAngle;
     
     if(totalAngle == 360)
+    {
       notchAngleRange -= notchAngleRange / numNotches;
+      rotateNeedleFully = true;
+    }
   }
   
   public boolean setNotchWeight(int weight)
@@ -561,10 +564,7 @@ class Speedometer
   {
     float angle;
     float endAngle;
-    if(notchAngleRange == 360)
-      endAngle = notchStartAngle - 1;
-    else
-      endAngle = (rotateClockwise) ? (notchStartAngle - notchAngleRange) : (notchStartAngle + notchAngleRange);
+    endAngle = (rotateClockwise) ? (notchStartAngle - notchAngleRange) : (notchStartAngle + notchAngleRange);
     
     angle = lerp(notchStartAngle, endAngle, (float)needlePercentage / 100.0);
     angle %= 360;

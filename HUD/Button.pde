@@ -5,7 +5,6 @@ class Button
   private BrightnessPulse cp;
   private color colour;
   private color defaultColor = color(200, 30, 30);
-  private String label = "";
   
   Button(RectPlus b, BrightnessPulse c)
   {
@@ -18,7 +17,7 @@ class Button
     if(active)
       colour = cp.getColor();
     else 
-      colour = defaultColor;
+      colour = cp.getBaseColor();
     body.setColor(colour);
     body.drawRect();
   }
