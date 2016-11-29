@@ -9,6 +9,8 @@ Button heating, headLights, dimLights, mute, abs, wipers;
 RectPlus heatingRect, headLightsRect, dimLightsRect, muteRect, absRect, wipersRect;
 float buttonSecXOffset, buttonSecYOffset = 0;
 
+float engineControl = 0;
+
 
 void setup()
 {
@@ -52,16 +54,18 @@ void setup()
   gearDisplay.setDisplayColor(color(#000000));
   gearDisplay.setInnerDisplayColor(color(#B4DBDB));
   gearDisplay.setButtonColor(color(#279A9C));
+  gearDisplay.incGear();
   
   dialDash = new RectPlus(new PVector(width*.5, height*.7), width*.98, 350, color(#12362B), 30, 2, color(#002117));
   buttonDash = new RectPlus(new PVector(width*.5+buttonSecXOffset, height*.3+buttonSecYOffset), width*.5, 150, color(#12362B), 10, 2, color(#002117));
   
-  clock = new Speedometer(new PVector(width*.75, height*.75), 100, 12, 100, 1);
+  clock = new Speedometer(new PVector(width*.25, height*.22), 130, 12, 100, 1);
   clock.setBaseStartAngle((byte)0, -360.0/12.0);
   clock.setRotationRange(true, 0, 360);
   clock.setSpeedStart(1);
   clock.setOuterGaugeColor(color(171, 158, 137));
-  clock.setTextColor(color(0, 50, 0));
+  clock.setTextColor(color(#041C0C));
+  clock.setTextSize(12);
   FloatList clockBorderLens = new FloatList();
   IntList clockBorderColours = new IntList();
   
@@ -185,6 +189,16 @@ void mousePressed()
   
   if(heating.containsMouse())
     heating.toggleActive();
+  if(headLights.containsMouse())
+    headLights.toggleActive();
+  if(dimLights.containsMouse())
+    dimLights.toggleActive();
+  if(mute.containsMouse())
+    mute.toggleActive();
+  if(abs.containsMouse())
+    abs.toggleActive();
+  if(wipers.containsMouse())
+    wipers.toggleActive();
 }
 
 void draw()
@@ -196,10 +210,29 @@ void draw()
     buttonDash.drawRect();
     temperature.drawSpeedometer();
     oil.drawSpeedometer();
-    rpm.drawSpeedometer();
-    speedometer.drawSpeedometer();
     gearDisplay.render();
   }
+  
+  clock.drawSpeedometer();
+  
+  rpm.drawSpeedometer();
+  speedometer.drawSpeedometer();
+  
+  speedometer.setNeedlePercentage((engineControl * ((float)gearDisplay.getCurrentGear() / (float)gearDisplay.getMaxGear())));
+  rpm.setNeedlePercentage(engineControl);
+  if(engineControl >= 80 && gearDisplay.currentGear != gearDisplay.getMaxGear())
+  {
+    engineControl -= 40;
+    gearDisplay.incGear();
+  }
+  
+  engineControl += 0.2;
+  if(engineControl >= 95)
+  {
+    engineControl = 0;
+    gearDisplay.setGear(1);
+  }
+  
   heating.render();
   headLights.render();
   dimLights.render();
@@ -210,6 +243,7 @@ void draw()
   leftIndicator.render();
   rightIndicator.render();
   // Set the time
-  float clockPercentage = (hour()*100.0)/12.0 + (((float)minute()/60.0)*100)/12; 
-  //clock.setNeedlePercentage(clockPercentage);
+  float clockPercentage = ((hour()%12)*100)/12;
+  
+  clock.setNeedlePercentage(clockPercentage);
 }
