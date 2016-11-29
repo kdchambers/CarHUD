@@ -5,6 +5,7 @@ class Button
   private BrightnessPulse cp;
   private color colour;
   private color defaultColor = color(200, 30, 30);
+  private String label = "";
   
   Button(RectPlus b, BrightnessPulse c)
   {
@@ -22,16 +23,6 @@ class Button
     body.drawRect();
   }
   
-  void mousePressed()
-  {
-    print("Called!\n");
-    // Decide whether it is active and change color pattern
-    if(body.containsMouse())
-      active = true;
-    else
-      active = false;
-  }
-  
   boolean containsMouse()
   {
    return body.containsMouse(); 
@@ -40,5 +31,10 @@ class Button
   void setActive(boolean val)
   {
    active = val; 
+  }
+  
+  void toggleActive()
+  {
+    active = !active;
   }
 }
